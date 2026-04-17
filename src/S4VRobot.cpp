@@ -34,8 +34,8 @@ void S4VRobot::begin(std::string name)
     digitalWrite(L298_IN3, LOW);
     digitalWrite(L298_IN4, LOW);
 
-    analogWrite(L298_ENA, MOTOR_SPEED); 
-    analogWrite(L298_ENB, MOTOR_SPEED); 
+    analogWrite(L298_ENA, 0); 
+    analogWrite(L298_ENB, 0); 
 }
 
 void S4VRobot::wait()
