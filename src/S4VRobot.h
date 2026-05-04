@@ -2,7 +2,7 @@
  * @file S4VRobot.h
  * @brief Khai báo các hàm điều khiển cho Robot S4V và link tới thư viện Dabble App
  * @author Manh Vu
- * * @note 
+ * * @note
  * LAST UPDATE: 2024-05-20 11:18PM
  * - Xóa hằng số MOTOR_SPEED
  * - Hàm khởi tạo robot đặt tốc độ ban đầu của động cơ bằng 0
@@ -17,6 +17,7 @@
 #include "DabbleESP32.h"
 #include "ESP32Servo.h"
 
+
 #define L298_ENA 4
 #define L298_IN1 5
 #define L298_IN2 6
@@ -24,15 +25,29 @@
 #define L298_IN4 15
 #define L298_ENB 16
 
+#ifndef MOTOR_STEP
+#define MOTOR_STEP 8
+#endif
+
 #define ARM_SERVO_PIN 17
 #define ARM_SERVO_MIN_ANGLE 0
 #define ARM_SERVO_MAX_ANGLE 180
 #define ARM_SERVO_STEP 1
+#define ARM_SERVO_DEFAULT_ANGLE ARM_SERVO_MAX_ANGLE
 
 #define GRIPPER_SERVO_PIN 18
 #define GRIPPER_SERVO_MIN_ANGLE 0
-#define GRIPPER_SERVO_MAX_ANGLE 180
+#define GRIPPER_SERVO_MAX_ANGLE 90
 #define GRIPPER_SERVO_STEP 1
+#define GRIPPER_SERVO_DEFAULT_ANGLE GRIPPER_SERVO_MAX_ANGLE
+
+#ifndef LEFT_MOTOR_OFFSET
+#define LEFT_MOTOR_OFFSET  1.0f   // Hệ số tốc độ động cơ trái (0.0 - 1.0)
+#endif
+
+#ifndef RIGHT_MOTOR_OFFSET
+#define RIGHT_MOTOR_OFFSET 1.0f  // Hệ số tốc độ động cơ phải (0.0 - 1.0)
+#endif
 
 typedef enum {
     CLOCKWISE = 0,
@@ -68,7 +83,7 @@ class S4VRobot
          */
         void go_forward(uint8_t speed);
 
-        
+
         /**
          * @brief Mô tả: Hàm điều khiển robot chạy lùi.
          * @param speed: Tốc độ di chuyển của robot (0 - 100%).
@@ -112,19 +127,15 @@ class S4VRobot
          */
         void arm_downward();
         void wait_app_connection();
+        bool isAppConnected();
+        void control_motor(Motor motor, Direction direction, uint8_t speed);
     private:
         int32_t armAngle;
         Servo armServo;
         Servo gripperServo;
         int32_t gripperAngle;
-
-        /**
-         * @brief Mô tả: Hàm nội bộ điều khiển riêng cho động cơ.
-         * @param motor: Motor bên trái (LEFT_MOTOR) hoặc motor bên phải (RIGHT_MOTOR).
-         * @param direction: Hướng xoay động cơ thuận chiều kim đồng hồ (CLOCKWISE) hay ngược chiều kim đồng hồ (COUNTER_CLOCKWISE).
-         * @param speed: Tốc độ của động cơ (0 - 100%).
-         */
-        void control_motor(Motor motor, Direction direction, uint8_t speed);
+        uint8_t currentSpeed = 0;
+        uint8_t calSoftSpeed(uint8_t speed);
 };
 
 #endif

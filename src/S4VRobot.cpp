@@ -122,7 +122,8 @@ void S4VRobot::release()
 
 void S4VRobot::control_motor(Motor motor, Direction direction, uint8_t speed)
 {
-    if (motor == LEFT_MOTOR) {
+    currentSpeed = calSoftSpeed(speed);
+    if (motor == RIGHT_MOTOR) {
         if (direction == CLOCKWISE) {
             digitalWrite(L298_IN1, HIGH);
             digitalWrite(L298_IN2, LOW);
@@ -130,8 +131,8 @@ void S4VRobot::control_motor(Motor motor, Direction direction, uint8_t speed)
             digitalWrite(L298_IN1, LOW);
             digitalWrite(L298_IN2, HIGH);
         }
-        analogWrite(L298_ENA, speed);
-    } else if (motor == RIGHT_MOTOR) {
+        analogWrite(L298_ENA, (uint8_t)(currentSpeed * RIGHT_MOTOR_OFFSET));
+    } else if (motor == LEFT_MOTOR) {
         if (direction == CLOCKWISE) {
             digitalWrite(L298_IN3, HIGH);
             digitalWrite(L298_IN4, LOW);
@@ -139,6 +140,17 @@ void S4VRobot::control_motor(Motor motor, Direction direction, uint8_t speed)
             digitalWrite(L298_IN3, LOW);
             digitalWrite(L298_IN4, HIGH);
         }
-        analogWrite(L298_ENB, speed);
+        analogWrite(L298_ENB, (uint8_t)(currentSpeed * LEFT_MOTOR_OFFSET));
     }
+}
+
+uint8_t S4VRobot::calSoftSpeed(uint8_t speed)
+{
+    if((currentSpeed+MOTOR_STEP) > speed) return speed;
+    else return currentSpeed+MOTOR_STEP;
+}
+
+bool S4VRobot::isAppConnected()
+{
+    return Dabble.isAppConnected();
 }

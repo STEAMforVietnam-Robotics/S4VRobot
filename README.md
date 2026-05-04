@@ -1,121 +1,146 @@
 # S4VRobot
 
-Arduino library for controlling the S4V Robot car with robotic arm via Bluetooth using the [Dabble](https://thestempedia.com/product/dabble/) smartphone app on ESP32.
+Thư viện Arduino để điều khiển xe robot S4V có cánh tay robot qua Bluetooth, sử dụng ứng dụng [Dabble](https://thestempedia.com/product/dabble/) trên điện thoại thông minh với ESP32.
 
-## Features
+## Tính năng
 
-- Bluetooth Low Energy (BLE) communication via Dabble app
-- DC motor control (forward, backward, left, right, stop)
-- Robotic arm servo control (up/down)
-- Gripper servo control (grasp/release)
-- GamePad module integration for smartphone-based control
+- Giao tiếp Bluetooth Low Energy (BLE) qua ứng dụng Dabble
+- Điều khiển động cơ DC (tiến, lùi, trái, phải, dừng)
+- Hiệu chỉnh tốc độ động cơ trái/phải qua hằng số offset để robot đi thẳng
+- Điều khiển servo cánh tay robot (lên/xuống)
+- Điều khiển servo kẹp (kẹp/nhả)
+- Tích hợp module GamePad để điều khiển bằng điện thoại
 
-## Hardware Requirements
+## Yêu cầu phần cứng
 
-| Component | Details |
+| Linh kiện | Chi tiết |
 |-----------|---------|
-| Microcontroller | ESP32 |
-| Motor driver | L298N |
-| Drive motors | 2x DC motors (left & right) |
-| Arm servo | Connected to pin 17 |
-| Gripper servo | Connected to pin 18 |
-| App | Dabble (iOS / Android) |
+| Vi điều khiển | ESP32 |
+| Mạch điều khiển động cơ | L298N |
+| Động cơ di chuyển | 2x động cơ DC (trái & phải) |
+| Servo cánh tay | Kết nối với chân 17 |
+| Servo kẹp | Kết nối với chân 18 |
+| Ứng dụng | Dabble (iOS / Android) |
 
-## Pin Mapping
+## Sơ đồ chân
 
-| Pin | Function |
+| Chân | Chức năng |
 |-----|---------|
-| GPIO 4 | L298N ENA (Left motor PWM) |
+| GPIO 4 | L298N ENA (PWM động cơ trái) |
 | GPIO 5 | L298N IN1 |
 | GPIO 6 | L298N IN2 |
 | GPIO 7 | L298N IN3 |
 | GPIO 15 | L298N IN4 |
-| GPIO 16 | L298N ENB (Right motor PWM) |
-| GPIO 17 | Arm servo signal |
-| GPIO 18 | Gripper servo signal |
+| GPIO 16 | L298N ENB (PWM động cơ phải) |
+| GPIO 17 | Tín hiệu servo cánh tay |
+| GPIO 18 | Tín hiệu servo kẹp |
 
-## Installation
+## Cài đặt
 
-1. Download this repository as a `.zip` file.
-2. In Arduino IDE: **Sketch → Include Library → Add .ZIP Library...**
-3. Select the downloaded file.
-4. Install the **Dabble** library from the Arduino Library Manager as well.
+1. Tải repository này dưới dạng file `.zip`.
+2. Trong Arduino IDE: **Sketch → Include Library → Add .ZIP Library...**
+3. Chọn file vừa tải về.
+4. Cài đặt thêm thư viện **Dabble** từ Arduino Library Manager.
 
-## Quick Start
+## Hiệu chỉnh động cơ
+
+Hai động cơ thường có đặc tính cơ khí khác nhau, khiến robot đi lệch. Thư viện cung cấp hai hằng số để bù lại sự chênh lệch này:
+
+| Hằng số | Mặc định | Mô tả |
+|---------|---------|-------|
+| `LEFT_MOTOR_OFFSET` | `1.0f` | Hệ số tốc độ động cơ trái (0.0 – 1.0) |
+| `RIGHT_MOTOR_OFFSET` | `1.0f` | Hệ số tốc độ động cơ phải (0.0 – 1.0) |
+
+Để tùy chỉnh, định nghĩa các hằng số này **trước** khi `#include`:
 
 ```cpp
+#define LEFT_MOTOR_OFFSET  1.0f
+#define RIGHT_MOTOR_OFFSET 0.90f  // Tăng nếu robot lệch trái, giảm nếu lệch phải
+#include <S4VRobot.h>
+```
+
+## Bắt đầu nhanh
+
+```cpp
+#define LEFT_MOTOR_OFFSET  1.0f   // Hệ số tốc độ động cơ trái (0.0 - 1.0)
+#define RIGHT_MOTOR_OFFSET 0.85f  // Hệ số tốc độ động cơ phải (0.0 - 1.0)
 #include <S4VRobot.h>
 
 S4VRobot Robot;
 
 void setup() {
   Serial.begin(115200);
-  Robot.begin("S4VRobot"); // BLE device name visible in Dabble
+  Robot.begin("S4VRobot"); // Tên thiết bị BLE hiển thị trong Dabble
 }
 
 void loop() {
-  Robot.processInput(); // Must be called every loop
+  Robot.processInput(); // Phải gọi mỗi vòng lặp
 
-  if (GamePad.isUpPressed())         Robot.go_forward();
-  else if (GamePad.isDownPressed())  Robot.go_backward();
-  else if (GamePad.isLeftPressed())  Robot.turn_left();
-  else if (GamePad.isRightPressed()) Robot.turn_right();
-  else                               Robot.stop();
+  if (Robot.isAppConnected()) {
+    if (GamePad.isCrossPressed())      Robot.arm_upward();
+    if (GamePad.isTrianglePressed())   Robot.arm_downward();
+    if (GamePad.isSquarePressed())     Robot.grasp();
+    if (GamePad.isCirclePressed())     Robot.release();
 
-  if (GamePad.isTrianglePressed())   Robot.arm_upward();
-  if (GamePad.isCrossPressed())      Robot.arm_downward();
-  if (GamePad.isSquarePressed())     Robot.grasp();
-  if (GamePad.isCirclePressed())     Robot.release();
+    if (GamePad.isUpPressed())         Robot.go_forward();
+    else if (GamePad.isDownPressed())  Robot.go_backward();
+    else if (GamePad.isLeftPressed())  Robot.turn_left();
+    else if (GamePad.isRightPressed()) Robot.turn_right();
+    else                               Robot.stop();
+  } else {
+    Robot.stop();
+  }
 
-  delay(5);
+  delay(15);
 }
 ```
 
-## API Reference
+## Tài liệu API
 
-### Initialization
+### Khởi tạo
 
-| Method | Description |
+| Phương thức | Mô tả |
 |--------|-------------|
-| `begin(name)` | Initialize BLE, motors, and servos. `name` is the BLE device name (default: `"S4VRobot"`). |
-| `wait_app_connection()` | Block until the Dabble app connects. |
-| `processInput()` | Process incoming BLE data — call every `loop()`. |
+| `begin(name)` | Khởi tạo BLE, động cơ và servo. `name` là tên thiết bị BLE (mặc định: `"S4VRobot"`). |
+| `wait_app_connection()` | Chờ cho đến khi ứng dụng Dabble kết nối. |
+| `processInput()` | Xử lý dữ liệu BLE đến — gọi mỗi `loop()`. |
+| `isAppConnected()` | Trả về `true` nếu ứng dụng Dabble đang kết nối. |
 
-### Drive Control
+### Điều khiển di chuyển
 
-| Method | Description |
+| Phương thức | Mô tả |
 |--------|-------------|
-| `go_forward(speed)` | Move forward. Default speed: `150` (0–255). |
-| `go_backward(speed)` | Move backward. |
-| `turn_left(speed)` | Rotate left (pivot turn). |
-| `turn_right(speed)` | Rotate right (pivot turn). |
-| `stop()` | Stop both drive motors. |
+| `go_forward(speed)` | Di chuyển tiến. Tốc độ mặc định: `255` (0–255). |
+| `go_backward(speed)` | Di chuyển lùi. |
+| `turn_left(speed)` | Quay trái (xoay tại chỗ). |
+| `turn_right(speed)` | Quay phải (xoay tại chỗ). |
+| `stop()` | Dừng cả hai động cơ. |
 
-### Arm & Gripper
+### Cánh tay & Kẹp
 
-| Method | Description |
+| Phương thức | Mô tả |
 |--------|-------------|
-| `arm_upward()` | Raise arm by one step (0–180°). |
-| `arm_downward()` | Lower arm by one step. |
-| `grasp()` | Close gripper by one step. |
-| `release()` | Open gripper by one step. |
+| `arm_upward()` | Nâng cánh tay lên một bước (0–180°). |
+| `arm_downward()` | Hạ cánh tay xuống một bước. |
+| `grasp()` | Đóng kẹp một bước. |
+| `release()` | Mở kẹp một bước. |
 
-## Dabble App Setup
+## Cài đặt ứng dụng Dabble
 
-1. Install **Dabble** on your smartphone ([Google Play](https://play.google.com/store/apps/details?id=io.dabbleapp) / [App Store](https://apps.apple.com/app/dabble-diy-arduino-projects/id1472298547)).
-2. Open the app → select **GamePad** module.
-3. Connect to the BLE device named `S4VRobot` (or your custom name).
+1. Cài đặt **Dabble** trên điện thoại ([Google Play](https://play.google.com/store/apps/details?id=io.dabbleapp) / [App Store](https://apps.apple.com/app/dabble-diy-arduino-projects/id1472298547)).
+2. Mở ứng dụng → chọn module **GamePad**.
+3. Kết nối với thiết bị BLE tên `S4VRobot` (hoặc tên tùy chỉnh của bạn).
 
-## Dependencies
+## Thư viện phụ thuộc
 
-- [DabbleESP32](https://github.com/STEMpedia/DabbleESP32) — included in this library
-- [ESP32Servo](https://github.com/madhephaestus/ESP32Servo) — included in this library
+- [DabbleESP32](https://github.com/STEMpedia/DabbleESP32) — đã được tích hợp trong thư viện này
+- [ESP32Servo](https://github.com/madhephaestus/ESP32Servo) — đã được tích hợp trong thư viện này
 
-## License
+## Giấy phép
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT License — xem [LICENSE](LICENSE) để biết chi tiết.
 
-## Author
+## Tác giả
 
 ThangND — [thang.nd@steamforvietnam.org](mailto:thang.nd@steamforvietnam.org)  
 Steam for Vietnam
