@@ -12,7 +12,7 @@
 #define FROM_DABBLE_LIBRARY
 #include "S4VRobot.h"
 
-S4VRobot::S4VRobot() : armAngle(ARM_SERVO_MIN_ANGLE), gripperAngle(GRIPPER_SERVO_MIN_ANGLE) {};
+S4VRobot::S4VRobot() : armAngle(ARM_SERVO_DEFAULT_ANGLE), gripperAngle(GRIPPER_SERVO_DEFAULT_ANGLE) {};
 
 void S4VRobot::begin(std::string name)
 {
