@@ -88,7 +88,7 @@ void S4VRobot::processInput()
     Dabble.processInput();
 }
 
-void S4VRobot::arm_upward()
+void S4VRobot::arm_downward()
 {
     if (armAngle < ARM_SERVO_MAX_ANGLE) {
         armAngle += ARM_SERVO_STEP;
@@ -96,7 +96,7 @@ void S4VRobot::arm_upward()
     }
 }
 
-void S4VRobot::arm_downward()
+void S4VRobot::arm_upward()
 {
     if (armAngle > ARM_SERVO_MIN_ANGLE) {
         armAngle -= ARM_SERVO_STEP;
