@@ -92,7 +92,7 @@ void S4VRobot::arm_downward()
 {
     if (armAngle < ARM_SERVO_MAX_ANGLE) {
         armAngle += ARM_SERVO_STEP;
-        armServo.write(armAngle);
+        armServo.write(floor(armAngle));
     }
 }
 
@@ -100,7 +100,7 @@ void S4VRobot::arm_upward()
 {
     if (armAngle > ARM_SERVO_MIN_ANGLE) {
         armAngle -= ARM_SERVO_STEP;
-        armServo.write(armAngle);
+        armServo.write(ceil(armAngle));
     }
 }
 
@@ -108,7 +108,7 @@ void S4VRobot::grasp()
 {
     if (gripperAngle < GRIPPER_SERVO_MAX_ANGLE) {
         gripperAngle += GRIPPER_SERVO_STEP;
-        gripperServo.write(gripperAngle);
+        gripperServo.write(floor(gripperAngle));
     }
 }
 
@@ -116,7 +116,7 @@ void S4VRobot::release()
 {
     if (gripperAngle > GRIPPER_SERVO_MIN_ANGLE) {
         gripperAngle -= GRIPPER_SERVO_STEP;
-        gripperServo.write(gripperAngle);
+        gripperServo.write(ceil(gripperAngle));
     }
 }
 

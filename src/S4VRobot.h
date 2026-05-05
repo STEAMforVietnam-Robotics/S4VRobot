@@ -32,13 +32,17 @@
 #define ARM_SERVO_PIN 17
 #define ARM_SERVO_MIN_ANGLE 0
 #define ARM_SERVO_MAX_ANGLE 180
-#define ARM_SERVO_STEP 1
+#ifndef ARM_SERVO_STEP
+#define ARM_SERVO_STEP 0.5
+#endif
 #define ARM_SERVO_DEFAULT_ANGLE ARM_SERVO_MAX_ANGLE
 
 #define GRIPPER_SERVO_PIN 18
 #define GRIPPER_SERVO_MIN_ANGLE 0
 #define GRIPPER_SERVO_MAX_ANGLE 90
-#define GRIPPER_SERVO_STEP 1
+#ifndef GRIPPER_SERVO_STEP
+#define GRIPPER_SERVO_STEP 1.0
+#endif
 #define GRIPPER_SERVO_DEFAULT_ANGLE GRIPPER_SERVO_MAX_ANGLE
 
 #ifndef LEFT_MOTOR_OFFSET
@@ -130,10 +134,10 @@ class S4VRobot
         bool isAppConnected();
         void control_motor(Motor motor, Direction direction, uint8_t speed);
     private:
-        int32_t armAngle;
+        float armAngle;
         Servo armServo;
         Servo gripperServo;
-        int32_t gripperAngle;
+        float gripperAngle;
         uint8_t currentSpeed = 0;
         uint8_t calSoftSpeed(uint8_t speed);
 };
