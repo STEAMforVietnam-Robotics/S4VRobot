@@ -12,7 +12,7 @@
 #define FROM_DABBLE_LIBRARY
 #include "S4VRobot.h"
 
-S4VRobot::S4VRobot() : armAngle(ARM_SERVO_DEFAULT_ANGLE), gripperAngle(GRIPPER_SERVO_DEFAULT_ANGLE) {};
+
 
 void S4VRobot::begin(std::string name)
 {
@@ -91,7 +91,7 @@ void S4VRobot::processInput()
 void S4VRobot::arm_downward()
 {
     if (armAngle < ARM_SERVO_MAX_ANGLE) {
-        armAngle += ARM_SERVO_STEP;
+        armAngle += armServoStep;
         armServo.write(floor(armAngle));
     }
 }
@@ -99,7 +99,7 @@ void S4VRobot::arm_downward()
 void S4VRobot::arm_upward()
 {
     if (armAngle > ARM_SERVO_MIN_ANGLE) {
-        armAngle -= ARM_SERVO_STEP;
+        armAngle -= armServoStep;
         armServo.write(ceil(armAngle));
     }
 }
@@ -107,7 +107,7 @@ void S4VRobot::arm_upward()
 void S4VRobot::grasp()
 {
     if (gripperAngle < GRIPPER_SERVO_MAX_ANGLE) {
-        gripperAngle += GRIPPER_SERVO_STEP;
+        gripperAngle += gripperServoStep;
         gripperServo.write(floor(gripperAngle));
     }
 }
@@ -115,7 +115,7 @@ void S4VRobot::grasp()
 void S4VRobot::release()
 {
     if (gripperAngle > GRIPPER_SERVO_MIN_ANGLE) {
-        gripperAngle -= GRIPPER_SERVO_STEP;
+        gripperAngle -= gripperServoStep;
         gripperServo.write(ceil(gripperAngle));
     }
 }
@@ -131,7 +131,7 @@ void S4VRobot::control_motor(Motor motor, Direction direction, uint8_t speed)
             digitalWrite(L298_IN1, LOW);
             digitalWrite(L298_IN2, HIGH);
         }
-        analogWrite(L298_ENA, (uint8_t)(currentSpeed * RIGHT_MOTOR_OFFSET));
+        analogWrite(L298_ENA, (uint8_t)(currentSpeed * rightMotorSpeedOffset));
     } else if (motor == LEFT_MOTOR) {
         if (direction == CLOCKWISE) {
             digitalWrite(L298_IN3, HIGH);
@@ -140,7 +140,7 @@ void S4VRobot::control_motor(Motor motor, Direction direction, uint8_t speed)
             digitalWrite(L298_IN3, LOW);
             digitalWrite(L298_IN4, HIGH);
         }
-        analogWrite(L298_ENB, (uint8_t)(currentSpeed * LEFT_MOTOR_OFFSET));
+        analogWrite(L298_ENB, (uint8_t)(currentSpeed * leftMotorSpeedOffset));
     }
 }
 

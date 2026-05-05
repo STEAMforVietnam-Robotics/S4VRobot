@@ -67,7 +67,7 @@ typedef enum {
 class S4VRobot
 {
     public:
-        S4VRobot();
+        S4VRobot(){};
         /**
          * @brief Mô tả: Hàm khởi tạo các thông số cho robot (ví dụ: trạng thái các chân Digital và Analog).
          * Hàm này bắt buộc phải được chạy ở hàm setup() trước vòng lặp loop() để có thể điều khiển robot.
@@ -133,13 +133,18 @@ class S4VRobot
         void wait_app_connection();
         bool isAppConnected();
         void control_motor(Motor motor, Direction direction, uint8_t speed);
+        
     private:
         float armAngle;
+        float armServoStep = ARM_SERVO_STEP;
         Servo armServo;
         Servo gripperServo;
         float gripperAngle;
+        float gripperServoStep = GRIPPER_SERVO_STEP;
         uint8_t currentSpeed = 0;
         uint8_t calSoftSpeed(uint8_t speed);
+        float leftMotorSpeedOffset = LEFT_MOTOR_OFFSET;
+        float rightMotorSpeedOffset = RIGHT_MOTOR_OFFSET;
 };
 
 #endif

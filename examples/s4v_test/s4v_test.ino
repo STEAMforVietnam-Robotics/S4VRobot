@@ -1,5 +1,6 @@
 #define LEFT_MOTOR_OFFSET  1.0f   // Hệ số tốc độ động cơ trái (0.0 - 1.0)
 #define RIGHT_MOTOR_OFFSET 1.0f  // Hệ số tốc độ động cơ phải (0.0 - 1.0)
+#define ARM_SERVO_STEP   0.5f
 #include <S4VRobot.h>
 
 // Tạo 1 robot mới để điều khiển
