@@ -135,11 +135,11 @@ class S4VRobot
         void control_motor(Motor motor, Direction direction, uint8_t speed);
         
     private:
-        float armAngle;
+        float armAngle = ARM_SERVO_DEFAULT_ANGLE;
         float armServoStep = ARM_SERVO_STEP;
         Servo armServo;
         Servo gripperServo;
-        float gripperAngle;
+        float gripperAngle = GRIPPER_SERVO_DEFAULT_ANGLE;
         float gripperServoStep = GRIPPER_SERVO_STEP;
         uint8_t currentSpeed = 0;
         uint8_t calSoftSpeed(uint8_t speed);
