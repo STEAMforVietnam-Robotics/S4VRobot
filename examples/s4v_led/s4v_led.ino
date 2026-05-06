@@ -1,5 +1,7 @@
 #define LEFT_MOTOR_OFFSET  1.0f   // Hệ số tốc độ động cơ trái (0.0 - 1.0)
 #define RIGHT_MOTOR_OFFSET 1.0f  // Hệ số tốc độ động cơ phải (0.0 - 1.0)
+#define NUM_LEDS_1 20
+#define NUM_LEDS_2 20
 #include <S4VRobot.h>
 
 // Tạo 1 robot mới để điều khiển
@@ -9,6 +11,8 @@ void setup() {
     Serial.begin(115200);
     // Thiết lập thông số cho robot vừa tạo
     Robot.begin("S4VRobot");
+    Robot.led_brightness(150);
+    Robot.led_set_color(LED_BLUE);
 }
 
 void loop()

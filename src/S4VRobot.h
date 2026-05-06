@@ -16,6 +16,7 @@
 #define INCLUDE_GAMEPAD_MODULE
 #include "DabbleESP32.h"
 #include "ESP32Servo.h"
+#include <Adafruit_NeoPixel.h>
 
 
 #define L298_ENA 4
@@ -32,18 +33,28 @@
 #define ARM_SERVO_PIN 17
 #define ARM_SERVO_MIN_ANGLE 0
 #define ARM_SERVO_MAX_ANGLE 180
-#ifndef ARM_SERVO_STEP
-#define ARM_SERVO_STEP 0.5
-#endif
 #define ARM_SERVO_DEFAULT_ANGLE ARM_SERVO_MAX_ANGLE
 
 #define GRIPPER_SERVO_PIN 18
 #define GRIPPER_SERVO_MIN_ANGLE 0
 #define GRIPPER_SERVO_MAX_ANGLE 90
-#ifndef GRIPPER_SERVO_STEP
-#define GRIPPER_SERVO_STEP 1.0
-#endif
 #define GRIPPER_SERVO_DEFAULT_ANGLE GRIPPER_SERVO_MAX_ANGLE
+
+#ifndef LED_PIN_1
+#define LED_PIN_1 12
+#endif
+
+#ifndef NUM_LEDS_1
+#define NUM_LEDS_1 20
+#endif
+
+#ifndef LED_PIN_2
+#define LED_PIN_2 13
+#endif
+
+#ifndef NUM_LEDS_2
+#define NUM_LEDS_2 20
+#endif
 
 #ifndef LEFT_MOTOR_OFFSET
 #define LEFT_MOTOR_OFFSET  1.0f   // Hệ số tốc độ động cơ trái (0.0 - 1.0)
@@ -64,87 +75,61 @@ typedef enum {
     ARM_MOTOR = 2
 } Motor;
 
+typedef enum {
+    LED_RED     = 0,
+    LED_GREEN   = 1,
+    LED_BLUE    = 2,
+    LED_YELLOW  = 3,
+    LED_CYAN    = 4,
+    LED_MAGENTA = 5,
+    LED_WHITE   = 6,
+    LED_OFF     = 7
+} LedColor;
+
+typedef enum {
+    LED_STRIP_ALL = 0,
+    LED_STRIP_1   = 1,
+    LED_STRIP_2   = 2
+} LedStrip;
+
 class S4VRobot
 {
     public:
         S4VRobot(){};
-        /**
-         * @brief Mô tả: Hàm khởi tạo các thông số cho robot (ví dụ: trạng thái các chân Digital và Analog).
-         * Hàm này bắt buộc phải được chạy ở hàm setup() trước vòng lặp loop() để có thể điều khiển robot.
-         * @param name : Tên robot của bạn.
-         */
         void begin(std::string name = "S4VRobot");
         void wait();
-
-        /**
-         * @brief Mô tả: Hàm điều khiển robot dừng lại.
-         */
         void stop();
-
-        /**
-         * @brief Mô tả: Hàm điều khiển robot chạy thẳng.
-         * @param speed: Tốc độ di chuyển của robot (0 - 100%).
-         */
-        void go_forward(uint8_t speed);
-
-
-        /**
-         * @brief Mô tả: Hàm điều khiển robot chạy lùi.
-         * @param speed: Tốc độ di chuyển của robot (0 - 100%).
-         */
-        void go_backward(uint8_t speed);
-
-        /**
-         * @brief Mô tả: Hàm điều khiển robot xoay trái.
-         * @param speed: Tốc độ xoay trái của robot (0 - 100%).
-         */
-        void turn_left(uint8_t speed);
-
-        /**
-         * @brief Mô tả: Hàm điều khiển robot xoay phải.
-         * @param speed: Tốc độ xoay phải của robot (0 - 100%).
-         */
-        void turn_right(uint8_t speed);
-
-        /**
-         * @brief Mô tả: Hàm điều khiển càng gắp của robot thu lại.
-         */
-        void grasp();
-
-        /**
-         * @brief Mô tả: Hàm điều khiển càng gắp của robot mở ra.
-         */
-        void release();
-
-        /**
-         * @brief Mô tả: Hàm kiểm tra tín hiệu điều khiển từ app Dabble trên điện thoại.
-         */
+        void go_forward(uint8_t speed = 100);
+        void go_backward(uint8_t speed = 100);
+        void turn_left(uint8_t speed = 80);
+        void turn_right(uint8_t speed = 80);
+        void grasp(float step = 1.0); 
+        void release(float step = 1.0);
         void processInput();
-
-        /**
-         * @brief Mô tả: Hàm điều khiển tay đòn của robot nâng lên phía trên.
-         */
-        void arm_upward();
-
-        /**
-         * @brief Mô tả: Hàm điều khiển tay đòn của robot hạ xuống phía dưới.
-         */
-        void arm_downward();
+        void arm_upward(float step = 1.0);
+        void arm_downward(float step = 1.0);
         void wait_app_connection();
         bool isAppConnected();
         void control_motor(Motor motor, Direction direction, uint8_t speed);
-        
+        void led_set_color(LedColor color, LedStrip strip = LED_STRIP_ALL);
+        void led_set_color(uint8_t r, uint8_t g, uint8_t b, LedStrip strip = LED_STRIP_ALL);
+        void led_set_pixel(uint8_t index, LedColor color, LedStrip strip = LED_STRIP_1);
+        void led_set_pixel(uint8_t index, uint8_t r, uint8_t g, uint8_t b, LedStrip strip = LED_STRIP_1);
+        void led_off(LedStrip strip = LED_STRIP_ALL);
+        void led_brightness(uint8_t brightness, LedStrip strip = LED_STRIP_ALL);
+
     private:
         float armAngle = ARM_SERVO_DEFAULT_ANGLE;
-        float armServoStep = ARM_SERVO_STEP;
         Servo armServo;
         Servo gripperServo;
         float gripperAngle = GRIPPER_SERVO_DEFAULT_ANGLE;
-        float gripperServoStep = GRIPPER_SERVO_STEP;
         uint8_t currentSpeed = 0;
         uint8_t calSoftSpeed(uint8_t speed);
         float leftMotorSpeedOffset = LEFT_MOTOR_OFFSET;
         float rightMotorSpeedOffset = RIGHT_MOTOR_OFFSET;
+        Adafruit_NeoPixel leds  = Adafruit_NeoPixel(NUM_LEDS_1, LED_PIN_1, NEO_GRB + NEO_KHZ800);
+        Adafruit_NeoPixel leds2 = Adafruit_NeoPixel(NUM_LEDS_2, LED_PIN_2, NEO_GRB + NEO_KHZ800);
+        uint32_t _ledColorValue(LedColor color);
 };
 
 #endif
