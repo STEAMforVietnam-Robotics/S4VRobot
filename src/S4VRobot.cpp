@@ -44,6 +44,8 @@ void S4VRobot::begin(std::string name)
 
     analogWrite(L298_ENA, 0); 
     analogWrite(L298_ENB, 0); 
+    this->led_brightness(150);
+    this->led_set_color(led_color);
 }
 /*!
   @brief   Configure NeoPixel pin for output.
@@ -114,6 +116,17 @@ void S4VRobot::wait_app_connection()
 void S4VRobot::processInput()
 {
     Dabble.processInput();
+    if(GamePad.isSelectPressed())
+    {
+        if(millis() -  t_start > 3000)
+        {
+            static int mode_cnt = 0;
+            led_color = (LedColor)(mode_cnt++ % 8);
+            this->led_set_color(led_color);
+            t_start = millis();
+        }
+    }
+    else t_start = millis();
 }
 /**
  * @brief Mô tả: Hàm điều khiển tay đòn của robot hạ xuống phía dưới.

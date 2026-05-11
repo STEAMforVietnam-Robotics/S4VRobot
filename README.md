@@ -46,9 +46,6 @@ Thư viện Arduino để điều khiển xe robot S4V có cánh tay robot qua B
 1. Tải repository này dưới dạng file `.zip`.
 2. Trong Arduino IDE: **Sketch → Include Library → Add .ZIP Library...**
 3. Chọn file vừa tải về.
-4. Cài đặt thêm các thư viện sau từ Arduino Library Manager:
-   - **Dabble**
-   - **Adafruit NeoPixel**
 
 ## Tùy chỉnh
 
@@ -214,7 +211,7 @@ Tham số `strip` chọn dải LED cần điều khiển — mặc định là `
 
 - [DabbleESP32](https://github.com/STEMpedia/DabbleESP32) — đã được tích hợp trong thư viện này
 - [ESP32Servo](https://github.com/madhephaestus/ESP32Servo) — đã được tích hợp trong thư viện này
-- [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) — cài đặt qua Arduino Library Manager
+- [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel) — đã được tích hợp trong thư viện này
 
 ## Giấy phép
 

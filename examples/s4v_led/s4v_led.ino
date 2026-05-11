@@ -11,8 +11,6 @@ void setup() {
     Serial.begin(115200);
     // Thiết lập thông số cho robot vừa tạo
     Robot.begin("S4VRobot");
-    Robot.led_brightness(150);
-    Robot.led_set_color(LED_BLUE);
 }
 
 void loop()

@@ -36,8 +36,8 @@
 #define ARM_SERVO_DEFAULT_ANGLE ARM_SERVO_MAX_ANGLE
 
 #define GRIPPER_SERVO_PIN 18
-#define GRIPPER_SERVO_MIN_ANGLE 0
-#define GRIPPER_SERVO_MAX_ANGLE 90
+#define GRIPPER_SERVO_MIN_ANGLE 70
+#define GRIPPER_SERVO_MAX_ANGLE 140
 #define GRIPPER_SERVO_DEFAULT_ANGLE GRIPPER_SERVO_MAX_ANGLE
 
 #ifndef LED_PIN_1
@@ -45,7 +45,7 @@
 #endif
 
 #ifndef NUM_LEDS_1
-#define NUM_LEDS_1 20
+#define NUM_LEDS_1 24
 #endif
 
 #ifndef LED_PIN_2
@@ -53,7 +53,7 @@
 #endif
 
 #ifndef NUM_LEDS_2
-#define NUM_LEDS_2 20
+#define NUM_LEDS_2 24
 #endif
 
 #ifndef LEFT_MOTOR_OFFSET
@@ -77,8 +77,8 @@ typedef enum {
 
 typedef enum {
     LED_RED     = 0,
-    LED_GREEN   = 1,
-    LED_BLUE    = 2,
+    LED_BLUE    = 1,
+    LED_GREEN   = 2,
     LED_YELLOW  = 3,
     LED_CYAN    = 4,
     LED_MAGENTA = 5,
@@ -130,6 +130,8 @@ class S4VRobot
         Adafruit_NeoPixel leds  = Adafruit_NeoPixel(NUM_LEDS_1, LED_PIN_1, NEO_GRB + NEO_KHZ800);
         Adafruit_NeoPixel leds2 = Adafruit_NeoPixel(NUM_LEDS_2, LED_PIN_2, NEO_GRB + NEO_KHZ800);
         uint32_t _ledColorValue(LedColor color);
+        uint32_t t_start = 0; 
+        LedColor led_color = LED_RED;
 };
 
 #endif
