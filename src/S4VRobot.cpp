@@ -121,7 +121,7 @@ void S4VRobot::processInput()
         if(millis() -  t_start > 3000)
         {
             static int mode_cnt = 0;
-            led_color = (LedColor)(mode_cnt++ % 8);
+            led_color = (LedColor)(++mode_cnt % 8);
             this->led_set_color(led_color);
             t_start = millis();
         }
@@ -210,8 +210,8 @@ void S4VRobot::control_motor(Motor motor, Direction direction, uint8_t speed)
  */
 uint8_t S4VRobot::calSoftSpeed(uint8_t speed)
 {
-    if((currentSpeed+MOTOR_STEP) > speed) return speed;
-    else return currentSpeed+MOTOR_STEP;
+    if((currentSpeed+motor_step) > speed) return speed;
+    else return currentSpeed+motor_step;
 }
 
 /**

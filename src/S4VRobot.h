@@ -132,6 +132,7 @@ class S4VRobot
         uint32_t _ledColorValue(LedColor color);
         uint32_t t_start = 0; 
         LedColor led_color = LED_RED;
+        uint8_t motor_step = MOTOR_STEP;
 };
 
 #endif
