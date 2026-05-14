@@ -44,8 +44,14 @@ void S4VRobot::begin(std::string name)
 
     analogWrite(L298_ENA, 0); 
     analogWrite(L298_ENB, 0); 
+
+    preferences.begin("color",false);
+
+    this->led_color = (LedColor)preferences.getUChar("led_color",LED_RED);
+    this->mode_cnt = this->led_color;
     this->led_brightness(150);
-    this->led_set_color(led_color);
+    this->led_set_color(this->led_color);
+    
 }
 /*!
   @brief   Configure NeoPixel pin for output.
@@ -118,11 +124,11 @@ void S4VRobot::processInput()
     Dabble.processInput();
     if(GamePad.isSelectPressed())
     {
-        if(millis() -  t_start > 3000)
+        if(millis() -  t_start > 2000)
         {
-            static int mode_cnt = 0;
             led_color = (LedColor)(++mode_cnt % 8);
             this->led_set_color(led_color);
+            this->preferences.putUChar("led_color", led_color);
             t_start = millis();
         }
     }

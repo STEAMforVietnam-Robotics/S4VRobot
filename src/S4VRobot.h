@@ -17,6 +17,8 @@
 #include "DabbleESP32.h"
 #include "ESP32Servo.h"
 #include <Adafruit_NeoPixel.h>
+#include <Preferences.h>
+
 
 
 #define L298_ENA 4
@@ -27,7 +29,7 @@
 #define L298_ENB 16
 
 #ifndef MOTOR_STEP
-#define MOTOR_STEP 8
+#define MOTOR_STEP 4
 #endif
 
 #define ARM_SERVO_PIN 17
@@ -36,8 +38,8 @@
 #define ARM_SERVO_DEFAULT_ANGLE ARM_SERVO_MAX_ANGLE
 
 #define GRIPPER_SERVO_PIN 18
-#define GRIPPER_SERVO_MIN_ANGLE 70
-#define GRIPPER_SERVO_MAX_ANGLE 140
+#define GRIPPER_SERVO_MIN_ANGLE 135
+#define GRIPPER_SERVO_MAX_ANGLE 180
 #define GRIPPER_SERVO_DEFAULT_ANGLE GRIPPER_SERVO_MAX_ANGLE
 
 #ifndef LED_PIN_1
@@ -45,7 +47,7 @@
 #endif
 
 #ifndef NUM_LEDS_1
-#define NUM_LEDS_1 24
+#define NUM_LEDS_1 25
 #endif
 
 #ifndef LED_PIN_2
@@ -53,7 +55,7 @@
 #endif
 
 #ifndef NUM_LEDS_2
-#define NUM_LEDS_2 24
+#define NUM_LEDS_2 25
 #endif
 
 #ifndef LEFT_MOTOR_OFFSET
@@ -133,6 +135,8 @@ class S4VRobot
         uint32_t t_start = 0; 
         LedColor led_color = LED_RED;
         uint8_t motor_step = MOTOR_STEP;
+        Preferences preferences;
+        int mode_cnt = 0;
 };
 
 #endif

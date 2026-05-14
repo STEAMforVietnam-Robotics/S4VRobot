@@ -22,14 +22,14 @@ void loop()
         if (GamePad.isCrossPressed())
         {
             // Hạ tay đòn của robot xuống phía dưới
-            Robot.arm_downward(0.5);
+            Robot.arm_downward();
         }
 
         // Nếu nút hình 'TAM GIÁC' được nhấn
         if (GamePad.isTrianglePressed())
         {
             // Nâng tay đòn của robot lên phía trên
-            Robot.arm_upward(0.5);
+            Robot.arm_upward();
         }
 
         // Nếu nút hình 'VUÔNG' được nhấn
