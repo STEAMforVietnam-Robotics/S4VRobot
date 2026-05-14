@@ -80,15 +80,15 @@ Mỗi lần gọi hàm điều khiển động cơ, tốc độ thực tế khô
 | Hằng số | Mặc định | Mô tả |
 |---------|---------|-------|
 | `LED_PIN_1` | `12` | Chân data dải LED 1 |
-| `NUM_LEDS_1` | `20` | Số LED trên dải 1 |
+| `NUM_LEDS_1` | `25` | Số LED trên dải 1 |
 | `LED_PIN_2` | `13` | Chân data dải LED 2 |
-| `NUM_LEDS_2` | `20` | Số LED trên dải 2 |
+| `NUM_LEDS_2` | `25` | Số LED trên dải 2 |
 
 ```cpp
 #define LED_PIN_1   14
-#define NUM_LEDS_1  20
+#define NUM_LEDS_1  25
 #define LED_PIN_2   13
-#define NUM_LEDS_2   20
+#define NUM_LEDS_2   25
 #include <S4VRobot.h>
 ```
 
@@ -97,8 +97,8 @@ Mỗi lần gọi hàm điều khiển động cơ, tốc độ thực tế khô
 ```cpp
 #define LEFT_MOTOR_OFFSET  1.0f   // Hệ số tốc độ động cơ trái (0.0 - 1.0)
 #define RIGHT_MOTOR_OFFSET 1.0f   // Hệ số tốc độ động cơ phải (0.0 - 1.0)
-#define NUM_LEDS_1 20             // Số LED trên dải 1 (chân mặc định: GPIO 48)
-#define NUM_LEDS_2 20             // Số LED trên dải 2 (chân mặc định: GPIO 47)
+#define NUM_LEDS_1 25             // Số LED trên dải 1 (chân mặc định: GPIO 12)
+#define NUM_LEDS_2 25             // Số LED trên dải 2 (chân mặc định: GPIO 13)
 #include <S4VRobot.h>
 
 S4VRobot Robot;
@@ -106,8 +106,6 @@ S4VRobot Robot;
 void setup() {
     Serial.begin(115200);
     Robot.begin("S4VRobot");
-    Robot.led_brightness(150);        // Độ sáng ~59%
-    Robot.led_set_color(LED_BLUE);    // Khởi động với màu xanh dương
 }
 
 void loop() {
@@ -124,7 +122,8 @@ void loop() {
         else if (GamePad.isLeftPressed())       Robot.turn_left(80);
         else if (GamePad.isRightPressed())      Robot.turn_right(80);
         else                                    Robot.stop();
-    } else {
+    } else {    Robot.led_brightness(150);        // Độ sáng ~59%
+    Robot.led_set_color(LED_BLUE);    // Khởi động với màu xanh dương
         Robot.stop();
     }
 
@@ -167,7 +166,7 @@ Tham số `step` là bước thay đổi góc servo mỗi lần gọi hàm (`ste
 | `grasp(step)` | `1.0` | 0° – 90° | Đóng kẹp một bước. |
 | `release(step)` | `1.0` | 0° – 90° | Mở kẹp một bước. |
 
-> **Vị trí mặc định:** Cánh tay khởi động ở 180° (thấp nhất). Kẹp khởi động ở 90° (đóng hoàn toàn).
+> **Vị trí mặc định:** Cánh tay khởi động ở 180° (thấp nhất). Kẹp khởi động ở 180° (mở hoàn toàn).
 
 ### Điều khiển LED WS2812
 
